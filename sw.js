@@ -1,5 +1,5 @@
-const CACHE='inverno-v5-0';
-const FILES=['./','./index.html','./style.css','./data.js','./app.js','./manifest.webmanifest','./icon.svg','./piano-originale.pdf',...['006','012','018','024','030'].map(n=>'./images/piano-'+n+'.jpg')];
+const CACHE='inverno-v5-1';
+const FILES=['./','./index.html','./style.css','./data.js','./app.js','./manifest.webmanifest','./icon.svg','./apple-touch-icon.png','./piano-originale.pdf',...['006','012','018','024','030'].map(n=>'./images/piano-'+n+'.jpg')];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES))));
 self.addEventListener('message',event=>{if(event.data==='ACTIVATE_UPDATE')self.skipWaiting();});
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('inverno-')&&k!==CACHE).map(k=>caches.delete(k))))));

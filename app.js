@@ -99,5 +99,25 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
 if(!$('#guide-dialog')){const d=document.createElement('dialog');d.id='guide-dialog';d.className='guide-dialog';d.innerHTML='<div class="guide-dialog-head"><span>INVERNO · TECNICA</span><button id="guide-close" aria-label="Chiudi guida">×</button></div><div id="guide-content"></div>';document.body.append(d);d.addEventListener('click',e=>{if(e.target===d){if(typeof d.close==='function')d.close();else d.removeAttribute('open');}});}
 render();
 
+// V5.1: idratazione giornaliera, compatibile con i backup precedenti.
+const baseProgressHydration=progress;
+function waterTarget(){return Number.isFinite(state.hydrationTarget)?Math.max(500,Math.min(6000,state.hydrationTarget)):2000;}
+function waterAmount(date=localDate()){const value=state.hydration?.[date];return Number.isFinite(value)?Math.max(0,value):0;}
+function setWater(value,date=localDate()){state.hydration??={};state.hydration[date]=Math.max(0,Math.min(10000,Math.round(value/50)*50));}
+function waterCard(){
+ const amount=waterAmount(),target=waterTarget(),percent=Math.min(100,Math.round(amount/target*100)),bottles=(amount/2000).toLocaleString('it-IT',{maximumFractionDigits:2});
+ return `<section class="water-card" aria-labelledby="water-title"><div class="water-copy"><span class="eyebrow">IDRATAZIONE · OGGI</span><h2 id="water-title">La tua borraccia da 2 litri</h2><p><strong>${amount.toLocaleString('it-IT')} ml</strong> di ${target.toLocaleString('it-IT')} ml · ${percent}%</p><div class="water-track" role="progressbar" aria-label="Acqua bevuta oggi" aria-valuemin="0" aria-valuemax="${target}" aria-valuenow="${amount}"><span style="width:${percent}%"></span></div><small>${amount>=target?'Obiettivo raggiunto ✓':Math.max(0,target-amount).toLocaleString('it-IT')+' ml ancora da bere'} · ${bottles} borracce</small><div class="water-actions"><button data-water-add="-250">− 250 ml</button><button data-water-add="250">+ 250 ml</button><button data-water-add="500">+ 500 ml</button><button data-water-add="2000" class="primary">+ Borraccia</button></div><label class="water-target">Obiettivo giornaliero (ml)<input id="water-target" type="number" inputmode="numeric" min="500" max="6000" step="250" value="${target}"></label></div><div class="water-bottle" aria-hidden="true"><div class="water-fill" style="height:${percent}%"></div><span>2 L</span></div></section>`;
+}
+progress=function(){return baseProgressHydration().replace('<div class="grid">',waterCard()+'<div class="grid">');};
+document.addEventListener('click',e=>{
+ const button=e.target.closest('[data-water-add]');if(!button)return;
+ setWater(waterAmount()+Number(button.dataset.waterAdd));save();render();
+});
+document.addEventListener('change',e=>{
+ if(e.target.id!=='water-target')return;
+ const target=Math.max(500,Math.min(6000,Number(e.target.value)||2000));state.hydrationTarget=Math.round(target/250)*250;save();render();
+});
+render();
+
 // Un aggiornamento viene applicato solo dopo un gesto dell’utente.
 if('serviceWorker' in navigator){navigator.serviceWorker.ready.then(reg=>{const offer=()=>{if(!reg.waiting)return;const banner=document.createElement('div');banner.className='update-banner';banner.innerHTML='<span>È disponibile una nuova versione.</span><button>Aggiorna app</button>';banner.querySelector('button').onclick=()=>{if(!save())return;reg.waiting?.postMessage('ACTIVATE_UPDATE');};document.body.append(banner);};offer();reg.addEventListener('updatefound',()=>{const installing=reg.installing;installing?.addEventListener('statechange',()=>{if(installing.state==='installed')offer();});});}).catch(()=>{});let reloaded=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!reloaded){reloaded=true;location.reload();}});}

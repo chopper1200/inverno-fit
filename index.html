@@ -1,2 +1,59 @@
 <!doctype html>
-<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#10253e"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="description" content="Il tuo piano di allenamento di 12 settimane, con timer e diario personale."><title>Inverno · Il tuo allenamento</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2310253e'/%3E%3Cpath d='M18 16v32m28-32v32M10 24v16m44-16v16M18 32h28' stroke='%237fecbe' stroke-width='7'/%3E%3C/svg%3E"><link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="style.css"><script defer src="data.js"></script><script defer src="app.js"></script></head><body><header><a class="brand" href="#allenamento">INVERNO<span>12 settimane, un passo alla volta.</span></a><span class="edition">IL TUO PIANO</span></header><div class="shell"><aside><nav aria-label="Navigazione principale"><button data-view="allenamento">Allenamento</button><button data-view="progressi">Progressi</button><button data-view="nutrizione">Nutrizione</button><button data-view="spesa">Spesa</button><button data-view="impostazioni">Altro</button></nav><div class="aside-note">Il tuo spazio personale.<br>Pesi, ripetizioni e piccoli progressi.</div></aside><main id="main"></main></div><section class="timer" aria-label="Timer recupero"><div><span class="eyebrow">RECUPERO</span><output id="clock" aria-label="Tempo rimanente">01:00</output></div><select id="duration" aria-label="Durata recupero"><option value="30">30 sec</option><option value="45">45 sec</option><option value="60" selected>60 sec</option><option value="75">75 sec</option><option value="90">90 sec</option><option value="120">2 min</option><option value="180">3 min</option></select><button id="timer-toggle" class="primary">Avvia</button><button id="timer-reset" aria-label="Azzera timer">↺</button></section><div id="message" role="status" aria-live="polite"></div></body></html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10253e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="Il tuo piano di allenamento di 12 settimane, con timer e diario personale.">
+<title>Inverno · Il tuo allenamento</title>
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+<script defer src="data.js">
+</script>
+<script defer src="app.js">
+</script>
+</head>
+<body>
+<header>
+<a class="brand" href="#allenamento">INVERNO<span>12 settimane, un passo alla volta.</span>
+</a>
+<span class="edition">IL TUO PIANO</span>
+</header>
+<div class="shell">
+<aside>
+<nav aria-label="Navigazione principale">
+<button data-view="allenamento">Allenamento</button>
+<button data-view="progressi">Progressi</button>
+<button data-view="nutrizione">Nutrizione</button>
+<button data-view="spesa">Spesa</button>
+<button data-view="impostazioni">Altro</button>
+</nav>
+<div class="aside-note">Il tuo spazio personale.<br>Pesi, ripetizioni e piccoli progressi.</div>
+</aside>
+<main id="main">
+</main>
+</div>
+<section class="timer" aria-label="Timer recupero">
+<div>
+<span class="eyebrow">RECUPERO</span>
+<output id="clock" aria-label="Tempo rimanente">01:00</output>
+</div>
+<select id="duration" aria-label="Durata recupero">
+<option value="30">30 sec</option>
+<option value="45">45 sec</option>
+<option value="60" selected>60 sec</option>
+<option value="75">75 sec</option>
+<option value="90">90 sec</option>
+<option value="120">2 min</option>
+<option value="180">3 min</option>
+</select>
+<button id="timer-toggle" class="primary">Avvia</button>
+<button id="timer-reset" aria-label="Azzera timer">↺</button>
+</section>
+<div id="message" role="status" aria-live="polite">
+</div>
+</body>
+</html>

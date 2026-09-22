@@ -1,4 +1,4 @@
-const CACHE='inverno-v3-1';
+const CACHE='inverno-v4-1';
 const FILES=['./','./index.html','./style.css','./data.js','./app.js','./manifest.webmanifest','./icon.svg','./piano-originale.pdf',...['006','012','018','024','030'].map(n=>'./images/piano-'+n+'.jpg')];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES))));
 self.addEventListener('message',event=>{if(event.data==='ACTIVATE_UPDATE')self.skipWaiting();});

@@ -119,5 +119,61 @@ document.addEventListener('change',e=>{
 });
 render();
 
+// V5.2: riepilogo sessione, record personali e calendario attività.
+function numericValue(value){const n=Number.parseFloat(String(value??'').replace(',','.'));return Number.isFinite(n)&&n>=0?n:0;}
+function sessionStats(w=state.week,d=state.day){
+ const s=session(w,d),entries=Object.entries(s.items||{}).filter(([id])=>id.startsWith('e'));
+ let setsDone=0,volume=0;
+ for(const [,entry] of entries){
+  const sets=Array.isArray(entry.sets)?entry.sets:(entry.kg||entry.reps?[{kg:entry.kg,reps:entry.reps,done:entry.done}]:[]);
+  for(const set of sets){if(set.done)setsDone++;volume+=numericValue(set.kg)*numericValue(set.reps);}
+ }
+ return {exercisesDone:entries.filter(([,x])=>x.done).length,totalExercises:DAYS[d]?.ex.length||0,setsDone,volume:Math.round(volume),duration:Number.isFinite(s.durationMinutes)?s.durationMinutes:0};
+}
+function sessionSummaryCard(){
+ const stats=sessionStats();
+ return `<section class="session-summary" id="session-summary"><div><span class="eyebrow">SESSIONE COMPLETATA</span><h2>Ottimo lavoro.</h2><p>Il riepilogo usa solamente ciò che hai registrato nelle serie.</p></div><div class="summary-metrics"><div><strong>${stats.exercisesDone}/${stats.totalExercises}</strong><span>esercizi</span></div><div><strong>${stats.setsDone}</strong><span>serie fatte</span></div><div><strong>${stats.volume.toLocaleString('it-IT')}</strong><span>kg totali</span></div><div><strong>${stats.duration||'—'}</strong><span>${stats.duration?'minuti':'durata'}</span></div></div></section>`;
+}
+function personalRecords(){
+ const records=new Map();
+ for(const [key,s] of Object.entries(state.sessions)){
+  const day=Number(key.split('-')[1]);if(!DAYS[day])continue;
+  for(const [id,entry] of Object.entries(s.items||{})){
+   if(!/^e\d+$/.test(id))continue;
+   const index=Number(id.slice(1)),exercise=DAYS[day].ex[index];if(!exercise||/sec|min/.test(exercise[1]))continue;
+   const recordKey=day+'-'+id,current=records.get(recordKey)||{name:exercise[0],kg:0,reps:0,volume:0};
+   const sets=Array.isArray(entry.sets)?entry.sets:(entry.kg||entry.reps?[{kg:entry.kg,reps:entry.reps}]:[]);
+   for(const set of sets){const kg=numericValue(set.kg),reps=numericValue(set.reps);current.kg=Math.max(current.kg,kg);current.reps=Math.max(current.reps,reps);current.volume=Math.max(current.volume,Math.round(kg*reps));}
+   records.set(recordKey,current);
+  }
+ }
+ return [...records.values()].filter(x=>x.kg||x.reps).sort((a,b)=>(b.kg-a.kg)||(b.reps-a.reps)).slice(0,8);
+}
+function recordsCard(){
+ const rows=personalRecords();
+ return `<section class="card records-card"><div class="row"><div><span class="eyebrow">MIGLIORI RISULTATI</span><h2>Record personali</h2></div><span class="record-badge">${rows.length}</span></div>${rows.length?`<div class="record-list">${rows.map(x=>`<div><strong>${esc(x.name)}</strong><span>${x.kg?x.kg.toLocaleString('it-IT')+' kg':''}${x.kg&&x.reps?' · ':''}${x.reps?x.reps+' rip.':''}</span></div>`).join('')}</div>`:'<p class="muted">Registra peso e ripetizioni nelle serie: qui appariranno automaticamente i tuoi migliori risultati.</p>'}</section>`;
+}
+function dateKey(date){return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');}
+function activityCalendar(){
+ const workoutDates=new Set(Object.values(state.sessions).filter(x=>x.completed&&x.completedDate).map(x=>x.completedDate));
+ const diaryDates=new Set(state.diary.map(x=>x.date)),target=waterTarget(),today=new Date(),days=[];
+ for(let offset=27;offset>=0;offset--){const d=new Date(today);d.setHours(12,0,0,0);d.setDate(today.getDate()-offset);const key=dateKey(d),classes=[workoutDates.has(key)?'workout':'',waterAmount(key)>=target?'water':'',diaryDates.has(key)?'diary':''].filter(Boolean).join(' ');days.push(`<div class="activity-day ${classes}" title="${key}"><span>${d.getDate()}</span><i></i></div>`);}
+ return `<section class="card activity-card"><span class="eyebrow">ULTIMI 28 GIORNI</span><h2>Calendario attività</h2><div class="activity-weekdays"><span>L</span><span>M</span><span>M</span><span>G</span><span>V</span><span>S</span><span>D</span></div><div class="activity-grid">${days.join('')}</div><div class="activity-legend"><span><i class="workout"></i>Allenamento</span><span><i class="water"></i>Acqua</span><span><i class="diary"></i>Diario</span></div><small>Il calendario registra gli allenamenti completati da questo aggiornamento in poi.</small></section>`;
+}
+const baseWorkoutSummary=workout,baseProgressInsights=progress;
+workout=function(){const html=baseWorkoutSummary();return session().completed?html.replace('<p class="source-note">',sessionSummaryCard()+'<p class="source-note">'):html;};
+progress=function(){return baseProgressInsights().replace('<div class="card"><h2>Andamento del peso',activityCalendar()+recordsCard()+'<div class="card"><h2>Andamento del peso');};
+document.addEventListener('click',e=>{
+ const button=e.target.closest('button');if(!button)return;
+ if(button.id==='start-focus'){const s=mutableSession();if(!Number.isFinite(s.startedAt)){s.startedAt=Date.now();save();}}
+ if(button.id==='complete'){
+  const s=mutableSession();
+  if(s.completed){s.completedAt=new Date().toISOString();s.completedDate=localDate();if(Number.isFinite(s.startedAt))s.durationMinutes=Math.max(1,Math.round((Date.now()-s.startedAt)/60000));}
+  else{delete s.completedAt;delete s.completedDate;delete s.durationMinutes;delete s.startedAt;}
+  save();render();if(s.completed){notify('Sessione completata. Riepilogo aggiornato.');setTimeout(()=>$('#session-summary')?.scrollIntoView({behavior:'smooth',block:'center'}),50);}
+ }
+});
+render();
+
 // Un aggiornamento viene applicato solo dopo un gesto dell’utente.
 if('serviceWorker' in navigator){navigator.serviceWorker.ready.then(reg=>{const offer=()=>{if(!reg.waiting)return;const banner=document.createElement('div');banner.className='update-banner';banner.innerHTML='<span>È disponibile una nuova versione.</span><button>Aggiorna app</button>';banner.querySelector('button').onclick=()=>{if(!save())return;reg.waiting?.postMessage('ACTIVATE_UPDATE');};document.body.append(banner);};offer();reg.addEventListener('updatefound',()=>{const installing=reg.installing;installing?.addEventListener('statechange',()=>{if(installing.state==='installed')offer();});});}).catch(()=>{});let reloaded=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!reloaded){reloaded=true;location.reload();}});}

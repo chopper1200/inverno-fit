@@ -272,3 +272,30 @@ body{background:linear-gradient(180deg,#eef3f6 0,#f7f9fa 440px)}
  .water-actions{gap:6px}.water-actions button{flex:1 1 42%;font-size:.78rem;padding:7px}
  .water-target{font-size:.78rem}.water-card p strong{font-size:1.15rem}
 }
+
+/* V5.2 · riepilogo, record e calendario */
+.session-summary{background:linear-gradient(135deg,#123b34,#10253a);color:white;border:1px solid #2b6454;border-radius:22px;padding:24px;margin:20px 0}
+.session-summary h2{font-size:1.65rem;margin:5px 0}.session-summary p{color:#b8d0ca;margin-bottom:18px}
+.session-summary .eyebrow{color:#83e9c0}
+.summary-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.summary-metrics>div{background:#ffffff0d;border:1px solid #ffffff16;border-radius:14px;padding:14px;display:grid;gap:4px}
+.summary-metrics strong{font-size:1.45rem;font-variant-numeric:tabular-nums;color:#a6f1d3}
+.summary-metrics span{font-size:.75rem;color:#abc0c4}
+.records-card .row{margin-bottom:8px}.record-badge{display:grid;place-items:center;min-width:38px;height:38px;border-radius:12px;background:#dff3ea;color:#126148;font-weight:850}
+.record-list{display:grid}.record-list>div{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:13px 0;border-top:1px solid #e1e9ed}
+.record-list span{color:#35617a;font-weight:750;text-align:right;font-variant-numeric:tabular-nums}
+.activity-card{overflow:hidden}.activity-weekdays,.activity-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.activity-weekdays{margin:16px 0 7px;color:#758a99;text-align:center;font-size:.7rem;font-weight:800}
+.activity-day{aspect-ratio:1;min-width:0;border-radius:10px;background:#edf2f4;display:grid;place-items:center;position:relative;color:#496274;font-size:.75rem;font-weight:750}
+.activity-day i{position:absolute;bottom:4px;width:5px;height:5px;border-radius:50%;background:transparent}
+.activity-day.workout{box-shadow:inset 0 0 0 2px #34a77e}.activity-day.workout i{background:#258966}
+.activity-day.water{background:#dff5f7;color:#176779}.activity-day.diary::after{content:"";position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:#ae7cd8}
+.activity-day.workout.water{background:linear-gradient(135deg,#dff3e9 50%,#dff5f7 50%)}
+.activity-legend{display:flex;gap:15px;flex-wrap:wrap;margin:15px 0 8px;font-size:.78rem;color:#526b7b}
+.activity-legend span{display:flex;align-items:center;gap:6px}.activity-legend i{width:9px;height:9px;border-radius:50%;background:#258966}.activity-legend i.water{background:#4cc0d5}.activity-legend i.diary{background:#ae7cd8}
+
+@media(max-width:760px){
+ .summary-metrics{grid-template-columns:1fr 1fr}.session-summary{padding:20px 16px}
+ .record-list>div{align-items:flex-start;flex-direction:column;gap:4px}.record-list span{text-align:left}
+ .activity-weekdays,.activity-grid{gap:5px}.activity-day{border-radius:8px;font-size:.7rem}
+}

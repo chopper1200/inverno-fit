@@ -293,9 +293,14 @@ body{background:linear-gradient(180deg,#eef3f6 0,#f7f9fa 440px)}
 .activity-day.workout.water{background:linear-gradient(135deg,#dff3e9 50%,#dff5f7 50%)}
 .activity-legend{display:flex;gap:15px;flex-wrap:wrap;margin:15px 0 8px;font-size:.78rem;color:#526b7b}
 .activity-legend span{display:flex;align-items:center;gap:6px}.activity-legend i{width:9px;height:9px;border-radius:50%;background:#258966}.activity-legend i.water{background:#4cc0d5}.activity-legend i.diary{background:#ae7cd8}
+.cardio-exercise{border-color:#b8d7ea;background:linear-gradient(145deg,#fff 0%,#f2f9fd 100%)}
+.cardio-log{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0 10px}
+.cardio-log label{font-size:.76rem;font-weight:800;color:var(--muted);letter-spacing:.02em}
+.cardio-log input{margin-top:6px;width:100%}
 
 @media(max-width:760px){
  .summary-metrics{grid-template-columns:1fr 1fr}.session-summary{padding:20px 16px}
  .record-list>div{align-items:flex-start;flex-direction:column;gap:4px}.record-list span{text-align:left}
  .activity-weekdays,.activity-grid{gap:5px}.activity-day{border-radius:8px;font-size:.7rem}
+ .cardio-log{grid-template-columns:repeat(2,minmax(0,1fr))}
 }

@@ -297,6 +297,8 @@ body{background:linear-gradient(180deg,#eef3f6 0,#f7f9fa 440px)}
 .cardio-log{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0 10px}
 .cardio-log label{font-size:.76rem;font-weight:800;color:var(--muted);letter-spacing:.02em}
 .cardio-log input{margin-top:6px;width:100%}
+.posture-exercise{background:linear-gradient(145deg,#fff 0%,#f6faf8 100%)}
+.posture-exercise>p{margin:14px 0;color:#496273}
 
 @media(max-width:760px){
  .summary-metrics{grid-template-columns:1fr 1fr}.session-summary{padding:20px 16px}
